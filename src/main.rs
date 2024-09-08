@@ -15,8 +15,23 @@ fn get_api_key() -> String {
 }
 
 fn handle_block(block: Block) {
-    let latest_block_number = block.header.number;
-    println!("Latest block number: {latest_block_number}");
+    let transactions = block.transactions;
+
+    if let Some(max_gas_tx) = transactions
+        .as_transactions()
+        .unwrap_or(&[])
+        .iter()
+        .max_by_key(|tx| tx.max_fee_per_gas)
+    {
+        if let Some(max_fee) = max_gas_tx.max_fee_per_gas {
+            println!(
+                "Latest block number: {}, Tx with highest base fee gas: {:?}",
+                block.header.number, max_fee
+            );
+        } else {
+            println!("Transaction has not max_fee_per_gas field");
+        }
+    }
 }
 
 #[tokio::main]
