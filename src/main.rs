@@ -1,4 +1,6 @@
+use alloy::providers::{Provider, ProviderBuilder};
 use dotenv::dotenv;
+use eyre::Result;
 use std::env;
 
 fn get_api_key() -> String {
@@ -7,7 +9,13 @@ fn get_api_key() -> String {
     env::var("RPC_URL").expect("RPC_URL must be set")
 }
 
-fn main() {
-    let rpc_url = get_api_key();
-    println!("RPC URL: {}", rpc_url);
+#[tokio::main]
+async fn main() -> Result<()> {
+    let rpc_url = get_api_key().parse()?;
+    let provider = ProviderBuilder::new().on_http(rpc_url);
+
+    let latest_block_number = provider.get_block_number().await?;
+    println!("Latest block number: {latest_block_number}");
+
+    Ok(())
 }

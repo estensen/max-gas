@@ -4,4 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+alloy = { version = "0.3.1", features = ["providers"] }
 dotenv = "0.15.0"
+eyre = "0.6.12"
+tokio = { version = "1.40.0", features = ["full"] }
